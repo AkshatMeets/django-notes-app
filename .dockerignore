@@ -1,0 +1,8 @@
+data/
+mysql/
+db/
+*.dblwr
+*.ibd
+*.log
+.git
+.gitignore
