@@ -35,11 +35,12 @@ pipeline {
                 }
             }
 
-                  stage("Deploy") {
+            stage("Deploy") {
                 steps {
                     sshagent(['ec2-ssh-key']) {
                         sh """
                           ssh -o StrictHostKeyChecking=no ubuntu@16.171.13.137 '
+                            cd /home/ubuntu/django-notes-app &&
                             docker pull akshatmeets/notes-app:latest &&
                             docker compose down || true &&
                             docker compose up -d
