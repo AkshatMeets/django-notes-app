@@ -35,28 +35,23 @@ pipeline {
                 }
             }
 
-          stage("Deploy") {
+                      stage("Deploy") {
                 steps {
                     sshagent(['ec2-ssh-key']) {
-                        sh """
-                          ssh -o StrictHostKeyChecking=no ubuntu@16.171.13.137 '
-                            # Clone repo if directory doesn't exist
-                            if [ ! -d "/home/ubuntu/django-notes-app" ]; then
-                              cd /home/ubuntu &&
-                              git clone https://github.com/AkshatMeets/django-notes-app.git
-                            fi
-                            
-                            # Navigate and deploy
-                            cd /home/ubuntu/django-notes-app &&
-                            git pull origin main &&
-                            docker pull akshatmeets/notes-app:latest &&
-                            docker compose down || true &&
-                            docker compose up -d
-                          '
-                        """
+                        sh '''
+                            ssh -o StrictHostKeyChecking=no ubuntu@16.171.13.137 \
+                            'if [ ! -d "/home/ubuntu/django-notes-app" ]; then \
+                                cd /home/ubuntu && \
+                                git clone https://github.com/AkshatMeets/django-notes-app.git; \
+                            fi && \
+                            cd /home/ubuntu/django-notes-app && \
+                            git pull origin main && \
+                            docker pull akshatmeets/notes-app:latest && \
+                            docker compose down || true && \
+                            docker compose up -d'
+                        '''
                     }
                 }
             }
-
     }
 }
