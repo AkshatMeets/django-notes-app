@@ -35,14 +35,19 @@ pipeline {
                 }
             }
 
-       stage("Deploy") {
-            steps {
-                sh """
-                    docker ps -q --filter "publish=8000" | xargs -r docker stop
-                    docker ps -aq --filter "publish=8000" | xargs -r docker rm
-                    docker compose up -d
-                """
+                  stage("Deploy") {
+                steps {
+                    sshagent(['ec2-ssh-key']) {
+                        sh """
+                          ssh -o StrictHostKeyChecking=no ubuntu@16.171.13.137 '
+                            docker pull akshatmeets/notes-app:latest &&
+                            docker compose down || true &&
+                            docker compose up -d
+                          '
+                        """
+                    }
+                }
             }
-        }
+
     }
 }
