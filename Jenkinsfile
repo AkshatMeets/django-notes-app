@@ -35,14 +35,14 @@ pipeline {
                 }
             }
 
-        stage("Deploy") {
-                    steps {
-                        echo "Deploying application"
-                        sh """
-                            docker compose down --remove-orphans || true
-                            docker compose up -d
-                        """
-                    }
-                }
+       stage("Deploy") {
+            steps {
+                sh """
+                    docker ps -q --filter "publish=8000" | xargs -r docker stop
+                    docker ps -aq --filter "publish=8000" | xargs -r docker rm
+                    docker compose up -d
+                """
+            }
+        }
     }
 }
